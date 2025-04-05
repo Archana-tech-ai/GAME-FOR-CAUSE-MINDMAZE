@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MindMaze</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #d1f4f9, #f5d1f1);
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 40px;
+      color: #333;
+      font-size: 3em;
+    }
+
+    .game-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      padding: 50px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .game-card {
+      background-color: #fff;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
+      cursor: pointer;
+    }
+
+    .game-card:hover {
+      transform: scale(1.05);
+    }
+
+    .game-card h2 {
+      margin: 10px 0;
+      color: #4a148c;
+    }
+  </style>
+</head>
+<body>
+  <h1>MindMaze</h1>
+
+  <div class="game-container">
+    <div class="game-card" onclick="location.href='doctor_dash.html'">
+      <h2>Doctor Dash</h2>
+      <p>Navigate through challenges and learn about wellness.</p>
+    </div>
+
+    <div class="game-card" onclick="location.href='flashcard_challenge.html'">
+      <h2>Flashcard Challenge</h2>
+      <p>Test your mental health knowledge with quick flashcards.</p>
+    </div>
+
+    <div class="game-card" onclick="location.href='stress_buster.html'">
+      <h2>Stress Buster</h2>
+      <p>Relax with fun mini activities to beat stress.</p>
+    </div>
+
+    <div class="game-card" onclick="location.href='self_care_quiz.html'">
+      <h2>Self-Care Quiz</h2>
+      <p>Discover your self-care style with this quiz.</p>
+      <div class="game-card">
+        <h2>Treasure Trail 🗺️</h2>
+        <p>Help the patient reach the treasure while learning about diseases and cures.</p>
+        <a href="game.html" class="play-button">Play Now</a>
+      </div>
+      
+    </div>
+  </div>
+</body>
+</html>

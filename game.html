@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Maze Quest - Heal the Path</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #e6faff;
+    }
+
+    #game-container {
+  width: 960px;  /* 24 columns * 40px = 960px — correct */
+  height: 520px; /* 13 rows * 40px = 520px — fix this */
+  margin: 30px auto 10px;
+  position: relative;
+  background-color: #ccf2ff;
+  border: 4px solid #0077b6;
+}
+
+    .tile {
+      width: 40px;
+      height: 40px;
+      position: absolute;
+    }
+
+    .wall { background-color: #005f73; }
+    .coin {
+      background: url('https://cdn-icons-png.flaticon.com/512/138/138281.png') no-repeat center;
+      background-size: cover;
+    }
+    .player {
+      background: url('https://cdn-icons-png.flaticon.com/512/4320/4320337.png') no-repeat center;
+      background-size: cover;
+      z-index: 5;
+    }
+    .monster {
+      background: url('https://cdn-icons-png.flaticon.com/512/2932/2932789.png') no-repeat center;
+      background-size: cover;
+    }
+    .treasure {
+      background: url('https://cdn-icons-png.flaticon.com/512/854/854878.png') no-repeat center;
+      background-size: cover;
+    }
+
+    #score, #music-toggle {
+      text-align: center;
+      font-size: 18px;
+      margin: 10px;
+    }
+
+    #learned-box {
+      text-align: center;
+      font-size: 16px;
+      margin: 10px auto;
+      padding: 10px;
+      width: 960px;
+      background: #f1faff;
+      border-radius: 10px;
+      border: 1px solid #b3e0ff;
+    }
+
+    .popup {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      display: none;
+      z-index: 10;
+      width: 300px;
+      text-align: center;
+    }
+
+    .popup button {
+      padding: 8px 16px;
+      margin-top: 10px;
+      background-color: #28c7fa;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .popup button:hover {
+      background-color: #199ac7;
+    }
+
+    #music-toggle button {
+      font-size: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="music-toggle"><button onclick="toggleMusic()">🔈</button></div>
+
+  <audio id="bg-music" autoplay loop>
+    <source src="game-background-1-321720.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const music = document.getElementById("bg-music");
+    let isPlaying = true;
+    function toggleMusic() {
+      isPlaying ? music.pause() : music.play();
+      isPlaying = !isPlaying;
+    }
+  </script>
+
+  <h2 style="text-align:center;">🧠 Maze Quest - Heal the Path</h2>
+  <div id="game-container"></div>
+  <div id="score">Score: 0</div>
+  <div id="learned-box">Diseases we learned today: <span id="learned-list">None</span></div>
+
+  <div id="popup" class="popup">
+    <h3 id="disease-title">Disease Info</h3>
+    <p id="disease-impact"></p>
+    <p id="disease-cure"></p>
+    <button onclick="closePopup()">Continue</button>
+  </div>
+
+  <script>
+    const gameContainer = document.getElementById('game-container');
+    const popup = document.getElementById('popup');
+    const diseaseTitle = document.getElementById('disease-title');
+    const diseaseImpact = document.getElementById('disease-impact');
+    const diseaseCure = document.getElementById('disease-cure');
+    const scoreDisplay = document.getElementById('score');
+    const learnedList = document.getElementById('learned-list');
+
+    const diseases = [
+      { name: "Stress", impact: "Causes anxiety.", cure: "Mindfulness, rest." },
+      { name: "Obesity", impact: "Weight-related issues.", cure: "Exercise, diet." },
+      { name: "Anemia", impact: "Low energy.", cure: "Iron-rich foods." },
+      { name: "Insomnia", impact: "Sleep issues.", cure: "Routine, avoid caffeine." },
+      { name: "Anxiety", impact: "Constant worry.", cure: "Therapy, meditation." },
+      { name: "Burnout", impact: "Emotional fatigue.", cure: "Take breaks, self-care." },
+      { name: "Dehydration", impact: "Headaches, tiredness.", cure: "Drink water." },
+      { name: "Depression", impact: "Sadness, apathy.", cure: "Talk to someone, therapy." },
+      { name: "Hypertension", impact: "Heart strain.", cure: "Reduce salt, relax." },
+      { name: "Vitamin D Deficiency", impact: "Bone weakness.", cure: "Sunlight, supplements." },
+      { name: "Asthma", impact: "Breathing problems.", cure: "Inhaler, avoid triggers." },
+      { name: "Diabetes", impact: "Blood sugar levels.", cure: "Diet, insulin." },
+      { name: "Sleep Apnea", impact: "Interrupted sleep.", cure: "CPAP, weight loss." },
+      { name: "Migraine", impact: "Intense headaches.", cure: "Avoid triggers, meds." },
+      { name: "GERD", impact: "Heartburn.", cure: "Avoid spicy food." },
+      { name: "Back Pain", impact: "Posture problems.", cure: "Stretch, rest." }
+    ];
+    const map = [
+  "WWWWWWWWWWWWWWWWWWWWWWWW",
+  "W P     C     W     C  W",
+  "W WWWWW WWWWW W WWWWW WW",
+  "W     W  C   W W       W",
+  "W WWWWW WWWWW WWWWWWW  W",
+  "W C    W  C   C     C  W",
+  "W WWWWW WWWWW WWWWWWW  W",
+  "W C   C   C   W  C   WWW",
+  "WWWWWWWWWWWWW   WWWWW W",
+  "W C    C     W   C   W W",
+  "W WWWWWWWWW WWWWW W  WWW",
+  "W                 W T  W",
+  "WWWWWWWWWWWWWWWWWWWWWWWW"
+];
+
+
+
+    let player = { x: 2, y: 1 };
+    let monsters = [{ x: 7, y: 3 }, { x: 14, y: 5 }];
+    let score = 0;
+    let diseaseIndex = 0;
+    let learnedDiseases = [];
+
+    function drawMap() {
+      gameContainer.innerHTML = '';
+      map.forEach((row, y) => {
+        row.split('').forEach((tile, x) => {
+          const div = document.createElement('div');
+          div.classList.add('tile');
+          div.style.left = `${x * 40}px`;
+          div.style.top = `${y * 40}px`;
+
+          if (tile === 'W') div.classList.add('wall');
+          else if (tile === 'C') div.classList.add('coin');
+          else if (tile === 'M') div.classList.add('monster');
+          else if (tile === 'T') div.classList.add('treasure');
+
+          gameContainer.appendChild(div);
+        });
+      });
+
+      const playerDiv = document.createElement('div');
+      playerDiv.classList.add('tile', 'player');
+      playerDiv.style.left = `${player.x * 40}px`;
+      playerDiv.style.top = `${player.y * 40}px`;
+      gameContainer.appendChild(playerDiv);
+    }
+
+    function closePopup() {
+      popup.style.display = 'none';
+      drawMap();
+    }
+
+    function showPopup(disease, autoClose = false) {
+      diseaseTitle.textContent = disease.name;
+      diseaseImpact.textContent = "Impact: " + disease.impact;
+      diseaseCure.textContent = "Cure: " + disease.cure;
+      popup.style.display = 'block';
+
+      if (!learnedDiseases.includes(disease.name)) {
+        learnedDiseases.push(disease.name);
+        learnedList.textContent = learnedDiseases.join(', ');
+      }
+
+      if (autoClose) {
+        setTimeout(() => {
+          popup.style.display = 'none';
+          drawMap();
+        }, 1000);
+      }
+    }
+
+    function replaceAt(str, index, replacement) {
+      return str.substring(0, index) + replacement + str.substring(index + 1);
+    }
+
+    function movePlayer(dx, dy) {
+      const newX = player.x + dx;
+      const newY = player.y + dy;
+      if (map[newY][newX] === 'W') return;
+      const currentTile = map[newY][newX];
+      player.x = newX;
+      player.y = newY;
+
+      if (currentTile === 'C') {
+        score += 5;
+        scoreDisplay.textContent = "Score: " + score;
+        map[newY] = replaceAt(map[newY], newX, ' ');
+        if (diseaseIndex < diseases.length) {
+          showPopup(diseases[diseaseIndex++], true); // auto-close popup for coins
+        } else {
+          drawMap();
+        }
+        return;
+      }
+
+      if (currentTile === 'M') {
+        alert("💀 You were caught by a monster! Game Over.");
+        location.reload();
+      }
+
+      if (currentTile === 'T') {
+        score += 20;
+        alert("🎉 You reached the treasure! Great job healing the path!");
+        location.reload();
+      }
+
+      drawMap();
+    }
+
+    function moveMonsters() {
+      monsters.forEach(monster => {
+        const directions = [
+          { dx: 1, dy: 0 },
+          { dx: -1, dy: 0 },
+          { dx: 0, dy: 1 },
+          { dx: 0, dy: -1 }
+        ];
+        const validMoves = directions.filter(dir => {
+          const x = monster.x + dir.dx;
+          const y = monster.y + dir.dy;
+          return map[y][x] !== 'W' && map[y][x] !== 'T';
+        });
+
+        if (validMoves.length > 0) {
+          const move = validMoves[Math.floor(Math.random() * validMoves.length)];
+          map[monster.y] = replaceAt(map[monster.y], monster.x, ' ');
+          monster.x += move.dx;
+          monster.y += move.dy;
+          map[monster.y] = replaceAt(map[monster.y], monster.x, 'M');
+
+          if (monster.x === player.x && monster.y === player.y) {
+            alert("💀 A monster got you! Game Over.");
+            location.reload();
+          }
+        }
+      });
+      drawMap();
+    }
+
+    document.addEventListener('keydown', e => {
+      switch (e.key) {
+        case 'ArrowUp': movePlayer(0, -1); break;
+        case 'ArrowDown': movePlayer(0, 1); break;
+        case 'ArrowLeft': movePlayer(-1, 0); break;
+        case 'ArrowRight': movePlayer(1, 0); break;
+      }
+    });
+
+    setInterval(moveMonsters, 2000); // Slower monsters
+    drawMap();
+  </script>
+</body>
+</html>

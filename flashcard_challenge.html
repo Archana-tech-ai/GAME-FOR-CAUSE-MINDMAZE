@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flashcard Challenge</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff3e0;
+      text-align: center;
+      padding: 40px;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      color: #d84315;
+    }
+
+    .flashcard, .quiz-section {
+      background: #fff;
+      border-radius: 15px;
+      padding: 30px;
+      margin: 20px auto;
+      max-width: 500px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .symptom-list {
+      text-align: left;
+      margin: 20px 0;
+    }
+
+    button {
+      padding: 12px 25px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      margin-top: 20px;
+      cursor: pointer;
+      background-color: #fb8c00;
+      color: white;
+    }
+
+    .description {
+      display: none;
+      margin-top: 10px;
+      text-align: left;
+      font-style: italic;
+      color: #444;
+    }
+
+    .result {
+      font-size: 18px;
+      margin-top: 20px;
+    }
+
+    .option-btn {
+      display: block;
+      margin: 10px auto;
+      width: 80%;
+      background-color: #fb8c00;
+      transition: background-color 0.3s ease;
+    }
+
+    .candy-shower {
+      position: fixed;
+      top: -50px;
+      width: 30px;
+      animation: fall 2s linear forwards;
+      z-index: 9999;
+    }
+
+    @keyframes fall {
+      0% { top: -50px; opacity: 1; transform: rotate(0deg); }
+      100% { top: 100vh; opacity: 0; transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🍬 Flashcard Challenge</h1>
+
+  <div id="game"></div>
+
+  <script>
+    const flashcards = [
+      { disease: "Flu", symptoms: ["Fever", "Cough", "Sore throat"], description: "A viral infection that attacks your respiratory system, causing fever and cough." },
+      { disease: "Migraine", symptoms: ["Headache", "Dizziness"], description: "A neurological condition causing intense, throbbing headaches." },
+      { disease: "Food Poisoning", symptoms: ["Stomach pain", "Vomiting"], description: "Caused by eating contaminated food, leading to vomiting and pain." },
+      { disease: "Depression", symptoms: ["Fatigue", "Sadness", "Insomnia"], description: "A mental health disorder with persistent sadness and lack of interest." },
+      { disease: "Asthma", symptoms: ["Shortness of breath", "Wheezing"], description: "A condition where airways narrow, making breathing difficult." },
+      { disease: "COVID-19", symptoms: ["Fever", "Dry cough", "Fatigue"], description: "A contagious virus affecting lungs with fever and fatigue." },
+      { disease: "Chickenpox", symptoms: ["Itchy rash", "Fever", "Fatigue"], description: "A viral infection causing itchy rashes and fever." },
+      { disease: "Diabetes", symptoms: ["Frequent urination", "Thirst", "Fatigue"], description: "A chronic condition affecting blood sugar levels." },
+      { disease: "Anemia", symptoms: ["Fatigue", "Pale skin", "Dizziness"], description: "Lack of red blood cells leading to tiredness and pale skin." },
+      { disease: "Cold", symptoms: ["Runny nose", "Sneezing", "Cough"], description: "A mild viral infection affecting the nose and throat." },
+      { disease: "Tuberculosis", symptoms: ["Coughing blood", "Weight loss", "Fatigue"], description: "A bacterial infection mainly affecting the lungs." },
+      { disease: "Malaria", symptoms: ["Fever", "Chills", "Sweating"], description: "A mosquito-borne disease causing fever and chills." },
+      { disease: "Allergy", symptoms: ["Sneezing", "Itchy eyes", "Rashes"], description: "An immune system reaction to allergens like pollen or dust." },
+      { disease: "Typhoid", symptoms: ["High fever", "Weakness", "Loss of appetite"], description: "A bacterial infection from contaminated food or water." },
+      { disease: "Sinusitis", symptoms: ["Facial pain", "Nasal congestion", "Headache"], description: "Inflammation of the sinuses causing facial pressure and headaches." }
+    ];
+
+    let currentCard = 0;
+    let score = 0;
+    let wrongAnswers = [];
+
+    const gameDiv = document.getElementById("game");
+
+    function showFlashcard() {
+      if (currentCard < flashcards.length) {
+        const card = flashcards[currentCard];
+        gameDiv.innerHTML = `
+          <div class="flashcard">
+            <h2>Disease: ${card.disease}</h2>
+            <div class="symptom-list">
+              <strong>Symptoms:</strong>
+              <ul>${card.symptoms.map(s => `<li>${s}</li>`).join("")}</ul>
+            </div>
+            <button onclick="document.getElementById('desc').style.display='block'">What is this?</button>
+            <div class="description" id="desc">${card.description}</div>
+            <br><button onclick="nextCard()">Next</button>
+          </div>
+        `;
+      } else {
+        currentCard = 0;
+        showQuiz();
+      }
+    }
+
+    function nextCard() {
+      currentCard++;
+      showFlashcard();
+    }
+
+    function showQuiz() {
+      const card = flashcards[currentCard];
+
+      const options = [card.disease];
+      while (options.length < 4) {
+        const rand = flashcards[Math.floor(Math.random() * flashcards.length)].disease;
+        if (!options.includes(rand)) options.push(rand);
+      }
+
+      options.sort(() => Math.random() - 0.5);
+
+      gameDiv.innerHTML = `
+        <div class="quiz-section">
+          <h2>Guess the disease:</h2>
+          <div class="symptom-list">
+            <strong>Symptoms:</strong>
+            <ul>${card.symptoms.map(s => `<li>${s}</li>`).join("")}</ul>
+          </div>
+          ${options.map(opt => `
+            <button class="option-btn" onclick="checkAnswer(this, '${opt.replace(/'/g, "\\'")}')">${opt}</button>
+          `).join("")}
+          <div class="result" id="resultBox"></div>
+        </div>
+      `;
+    }
+
+    function checkAnswer(button, selected) {
+      const correct = flashcards[currentCard].disease;
+      const resultBox = document.getElementById("resultBox");
+      const buttons = document.querySelectorAll(".option-btn");
+
+      buttons.forEach(btn => btn.disabled = true);
+
+      if (selected === correct) {
+        score++;
+        button.style.backgroundColor = "#4caf50";
+        resultBox.innerHTML = `✅ Correct! +1 candy 🍬`;
+        triggerCandyShower();
+
+        setTimeout(() => {
+          currentCard++;
+          if (currentCard < flashcards.length) {
+            showQuiz();
+          } else {
+            showFinalScore();
+          }
+        }, 2000);
+      } else {
+        button.style.backgroundColor = "#e53935";
+        wrongAnswers.push(flashcards[currentCard]);
+        resultBox.innerHTML = `❌ Oops! Correct answer was <strong>${correct}</strong>. You'll review it again.`;
+
+        buttons.forEach(btn => {
+          if (btn.innerText === correct) {
+            btn.style.backgroundColor = "#4caf50";
+          }
+        });
+
+        setTimeout(() => {
+          currentCard++;
+          if (currentCard < flashcards.length) {
+            showQuiz();
+          } else {
+            showFinalScore();
+          }
+        }, 2500);
+      }
+    }
+
+    function dropCandy() {
+      const candy = document.createElement("img");
+      candy.src = "candy.jpg"; // Make sure this image exists in your project folder
+      candy.className = "candy-shower";
+      candy.style.left = Math.random() * (window.innerWidth - 30) + "px";
+      candy.style.width = (20 + Math.random() * 20) + "px";
+      candy.style.animationDuration = (1.5 + Math.random() * 1.5) + "s";
+      document.body.appendChild(candy);
+      setTimeout(() => candy.remove(), 3000);
+    }
+
+    function triggerCandyShower() {
+      for (let i = 0; i < 20; i++) {
+        setTimeout(dropCandy, Math.random() * 1500);
+      }
+    }
+
+    function showFinalScore() {
+      gameDiv.innerHTML = `
+        <h2>🎉 Game Over!</h2>
+        <p>Your score: <strong>${score} / ${flashcards.length}</strong></p>
+        ${wrongAnswers.length > 0 ? "<h3>Review & Retry:</h3>" : ""}
+        <div id="retry"></div>
+        <br><button onclick="location.reload()">Play Again</button>
+      `;
+
+      if (wrongAnswers.length > 0) {
+        flashcards.length = 0;
+        flashcards.push(...wrongAnswers);
+        currentCard = 0;
+        wrongAnswers.length = 0;
+        setTimeout(() => {
+          showQuiz();
+        }, 2000);
+      }
+    }
+
+    // Start the game
+    showFlashcard();
+  </script>
+
+</body>
+</html>
+

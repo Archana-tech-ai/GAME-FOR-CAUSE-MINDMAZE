@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MindMaze - Game Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #fbeee6, #f7d9d9);
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    h1 {
+      color: #ff6f61;
+      margin-top: 40px;
+      font-size: 48px;
+    }
+
+    .games-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      padding: 40px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .game-card {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
+
+    .game-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .game-card h2 {
+      color: #444;
+      margin-bottom: 10px;
+    }
+
+    .game-card p {
+      color: #666;
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .game-card a {
+      text-decoration: none;
+      background-color: #ff6f61;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .game-card a:hover {
+      background-color: #ff3b2f;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧠 MindMaze Dashboard</h1>
+  <div class="games-container">
+
+    <div class="game-card">
+      <h2>Doctor Dash</h2>
+      <p>Help patients by diagnosing diseases based on symptoms.</p>
+      <a href="doctor_dash.html">Play Now</a>
+    </div>
+
+    <div class="game-card">
+      <h2>Flashcard Challenge</h2>
+      <p>Learn and recall disease-symptom pairs in a flash!</p>
+      <a href="flashcard_challenge.html">Play Now</a>
+    </div>
+
+    <div class="game-card">
+      <h2>Stress Buster</h2>
+      <p>Get stress-reducing activities based on how you feel.</p>
+      <a href="stress_buster.html">Play Now</a>
+    </div>
+
+    <div class="game-card">
+      <h2>Self-Care Scheduler</h2>
+      <p>Plan daily tasks and track your self-care progress.</p>
+      <a href="self_care_game.html">Play Now</a>
+    </div>
+
+  </div>
+  <section class="games-section">
+    <div class="game-card">
+      <h2>🗺️ Treasure Trail</h2>
+      <p>Guide your patient to the treasure while learning about diseases, their impact, and cures.</p>
+      <a href="game.html" class="play-button">Start Adventure</a>
+    </div>
+  </section>
+  
+</body>
+</html>

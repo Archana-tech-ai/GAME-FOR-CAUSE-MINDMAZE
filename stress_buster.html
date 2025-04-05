@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stress Buster</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f3f4f6;
+      color: #333;
+      text-align: center;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #4caf50;
+    }
+
+    select, button {
+      padding: 10px 15px;
+      font-size: 16px;
+      margin-top: 20px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .activity-box {
+      background: #ffffff;
+      border-radius: 15px;
+      padding: 30px;
+      margin: 30px auto;
+      max-width: 600px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .motivational {
+      font-size: 20px;
+      color: #2e7d32;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🌼 Stress Buster 🌼</h1>
+  <p>Select how you're feeling, and let's relax together.</p>
+
+  <select id="issueSelect">
+    <option disabled selected>-- Choose your mood/state --</option>
+    <option value="anxiety">Anxiety</option>
+    <option value="depression">Depression</option>
+    <option value="obesity">Obesity</option>
+    <option value="insomnia">Insomnia</option>
+    <option value="burnout">Burnout</option>
+  </select>
+  <br>
+  <button onclick="suggestActivity()">Show Me an Activity</button>
+
+  <div id="activityBox" class="activity-box" style="display:none;"></div>
+
+  <script>
+    const activities = {
+      anxiety: {
+        title: "🧘‍♂️ Breathe In, Breathe Out",
+        description: "Sit comfortably. Inhale slowly for 4 seconds, hold for 4 seconds, exhale for 6 seconds. Repeat this 5 times. Focus only on your breath.",
+        message: "You're doing amazing. Just breathe — you're in control. 🌬️"
+      },
+      depression: {
+        title: "🎤 Speak Your Joy",
+        description: "Think of a happy moment in your life. Now say it out loud — relive it like a storyteller. Smile while you speak. :)",
+        message: "Every small joy matters. You’ve lived through beautiful moments and will live more. 🌟"
+      },
+      obesity: {
+        title: "🏃‍♀️ Mini Movement Break",
+        description: "Stand up, stretch your arms, do 5 jumping jacks or dance to your favorite song for 1 minute. Shake that stress off!",
+        message: "Moving even a little helps a lot. You’re glowing already! 💪"
+      },
+      insomnia: {
+        title: "🛏️ Calm Bedtime Ritual",
+        description: "Close your eyes and think of a peaceful place — maybe a beach or mountain. Imagine the sounds, scents, and breeze. Stay there for 2 minutes.",
+        message: "Peaceful sleep starts with a peaceful mind. You deserve deep rest. 🌙"
+      },
+      burnout: {
+        title: "✍️ Brain Dump & Gratitude",
+        description: "Take a notebook or phone and write down what's exhausting you. Then list 3 things you’re grateful for. Let it out.",
+        message: "You are not alone. You’re more than your to-do list. Rest is productive too. 💚"
+      }
+    };
+
+    function suggestActivity() {
+      const selected = document.getElementById("issueSelect").value;
+      const box = document.getElementById("activityBox");
+
+      if (activities[selected]) {
+        const act = activities[selected];
+        box.innerHTML = `
+          <h2>${act.title}</h2>
+          <p>${act.description}</p>
+          <button onclick="completeTask('${act.message}')">✅ I Did It</button>
+        `;
+        box.style.display = "block";
+      }
+    }
+
+    function completeTask(message) {
+      const box = document.getElementById("activityBox");
+      box.innerHTML += `<p class="motivational">${message}</p>`;
+    }
+  </script>
+
+</body>
+</html>

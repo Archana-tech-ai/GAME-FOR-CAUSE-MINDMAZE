@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Doctor Dash</title>
+  <style>
+    @keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+  100% { transform: translateX(0); }
+}
+
+.shake {
+  animation: shake 0.3s;
+}
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0fbff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    #game-container {
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    #patient-area img {
+      width: 200px;
+      height: auto;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      background-color: #28c7fa;
+      border: none;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #199ac7;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <header>
+      <h1>Doctor Dash 🩺</h1>
+      <div id="score">Score: 0</div>
+      <div id="timer">Time: 60s</div>
+    </header>
+
+    <div id="patient-area">
+      <img src="assets/patient-john.png" alt="Patient" id="patient-img">
+      <p id="symptoms">Symptoms: Fatigue, Dry Lips</p>
+    </div>
+
+    <div id="options"></div>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    
+    const patients = [
+      {
+        name: "John",
+        symptoms: "Fatigue, Dry Lips",
+        answer: "Dehydration",
+        img: "patient-john.jpg"
+      },
+      {
+        name: "Priya",
+        symptoms: "Short breath, Chest pain",
+        answer: "Asthma",
+        img: "patient-priya.jpg"
+      },
+      {
+        name: "Sam",
+        symptoms: "Headache, Irritability, Sleeplessness",
+        answer: "Stress",
+        img: "patient-sam.jpg"
+      },
+      {
+        name: "Lina",
+        symptoms: "Weight gain, Joint pain, High BP",
+        answer: "Obesity",
+        img: "patient-lina.jpg"
+      }
+    ];
+
+    let currentPatient = 0;
+    let score = 0;
+    let timeLeft = 60;
+
+    const scoreDisplay = document.getElementById("score");
+    const timerDisplay = document.getElementById("timer");
+    const symptomsText = document.getElementById("symptoms");
+    const patientImg = document.getElementById("patient-img");
+    const resultDisplay = document.getElementById("result");
+    const optionButtons = document.getElementById("options");
+
+    function loadPatient() {
+      const patient = patients[currentPatient];
+      symptomsText.textContent = `Symptoms: ${patient.symptoms}`;
+      patientImg.src = patient.img;
+      resultDisplay.textContent = "";
+      optionButtons.innerHTML = `
+        <button onclick="checkAnswer('Dehydration')">Dehydration</button>
+        <button onclick="checkAnswer('Stress')">Stress</button>
+        <button onclick="checkAnswer('Obesity')">Obesity</button>
+        <button onclick="checkAnswer('Asthma')">Asthma</button>
+      `;
+    }
+
+    function checkAnswer(selected) {
+      const correct = patients[currentPatient].answer;
+      if (selected === correct) {
+        resultDisplay.textContent = "✅ Correct!";
+        score += 10;
+      } else {
+        resultDisplay.textContent = `❌ Wrong! Correct answer: ${correct}`;
+      }
+
+      scoreDisplay.textContent = `Score: ${score}`;
+      currentPatient++;
+
+      if (currentPatient < patients.length) {
+        setTimeout(loadPatient, 1000);
+      } else {
+        setTimeout(() => {
+          resultDisplay.innerHTML = `🎉 Game Over! Final Score: ${score}`;
+          optionButtons.innerHTML = "";
+        }, 1000);
+      }
+    }
+
+    function startTimer() {
+      const timer = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = `Time: ${timeLeft}s`;
+
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          resultDisplay.innerHTML = `⏰ Time's up! Final Score: ${score}`;
+          optionButtons.innerHTML = "";
+        }
+      }, 1000);
+    }
+
+    // Start game
+    loadPatient();
+    startTimer();
+  </script>
+</body>
+</html>
