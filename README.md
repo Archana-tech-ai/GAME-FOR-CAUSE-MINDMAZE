@@ -19,7 +19,7 @@ We created this game to promote health awareness using different types of games.
  3. Stress Buster
 - A calming activity with breathing animation and motivational quotes.
 - Aimed to help users reduce stress and relax for a few minutes.
-- 
+  
  4. Self-Care Quiz
 - A short quiz to help users reflect on their self-care habits.
 - Based on the answers, it gives tips for better self-care routines.
