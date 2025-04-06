@@ -31,7 +31,7 @@ We created this game to promote health awareness using different types of games.
 6.Pop a bubble
   -pop the falling bubble to reduce your stress.
   -relaxing sound while popping the bubble and increase the score to popping the bubble.
-  -game over once we pop a monster.
+  -game over once we pop a monsters.
 
  ⚙️ Tech Stack Used
 
