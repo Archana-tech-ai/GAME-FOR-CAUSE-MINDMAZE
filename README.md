@@ -28,6 +28,10 @@ We created this game to promote health awareness using different types of games.
 - A maze game where the player collects coins that represent diseases.
 - Along the way, they get pop-ups with short info about those diseases.
 - They avoid moving monsters and reach the treasure at the end.
+6.Pop a bubble
+  -pop the falling bubble to reduce your stress.
+  -relaxing sound while popping the bubble and increase the score to popping the bubble.
+  -game over once we pop a monster.
 
  ⚙️ Tech Stack Used
 
