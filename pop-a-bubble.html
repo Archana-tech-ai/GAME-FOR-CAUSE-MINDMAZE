@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pop-a-Bubble Game</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #a7e8f1, #e0f7fa);
+      font-family: 'Comic Sans MS', cursive;
+    }
+
+    h1 {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #006064;
+      font-size: 28px;
+      z-index: 10;
+    }
+
+    #score {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #004d40;
+      font-size: 24px;
+      z-index: 10;
+    }
+
+    .bubble, .monster {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      cursor: pointer;
+      user-select: none;
+      z-index: 1;
+    }
+
+    .bubble {
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  border-radius: 50%;
+  cursor: pointer;
+  background: url('bubble.jpg') no-repeat center center;
+  background-size: cover;
+}
+
+    body {
+  margin: 0;
+  overflow: hidden;
+  font-family: 'Comic Sans MS', cursive;
+  background: url('pop.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+    .monster {
+      background: url('monster.jpg');
+      background-size: cover;
+    }
+
+    .game-over {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 36px;
+      color: #d32f2f;
+      background: #fff3f3;
+      padding: 20px 40px;
+      border-radius: 15px;
+      display: none;
+      z-index: 20;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #00796b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #004d40;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    .popped {
+      animation: pop 0.3s ease-out forwards;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Pop-a-Bubble Game</h1>
+  <div id="score">Score: 0</div>
+  <div id="gameOver" class="game-over">
+    Game Over!<br>
+    <span id="finalScore"></span><br>
+    <button onclick="restartGame()">Play Again</button>
+  </div>
+
+  <!-- Pop sound -->
+  <audio id="popSound" src="bubble-pop-2-293341.mp3" preload="auto"></audio>
+
+  <script>
+    let score = 0;
+    let isGameOver = false;
+
+    function createObject() {
+      if (isGameOver) return;
+
+      const obj = document.createElement("div");
+      const isMonster = Math.random() < 0.2;
+      obj.className = isMonster ? "monster" : "bubble";
+      obj.style.left = Math.random() * (window.innerWidth - 60) + "px";
+      obj.style.top = "-60px";
+      document.body.appendChild(obj);
+
+      obj.addEventListener("mouseenter", () => {
+
+        if (isGameOver) return;
+        if (isMonster) {
+          endGame();
+        } else {
+          score++;
+          document.getElementById("score").innerText = `Score: ${score}`;
+          document.getElementById("popSound").play();
+          obj.classList.add("popped");
+          setTimeout(() => obj.remove(), 300);
+        }
+      });
+
+      let fallSpeed = 2 + Math.random() * 2.5;
+      let fall = setInterval(() => {
+        let top = parseFloat(obj.style.top);
+        if (top > window.innerHeight) {
+          clearInterval(fall);
+          obj.remove();
+        } else {
+          obj.style.top = (top + fallSpeed) + "px";
+        }
+      }, 16);
+    }
+
+    function startGame() {
+      setInterval(createObject, 800);
+    }
+
+    function endGame() {
+      isGameOver = true;
+      document.getElementById("finalScore").innerText = `Your Score: ${score}`;
+      document.getElementById("gameOver").style.display = "block";
+    }
+
+    function restartGame() {
+      window.location.reload();
+    }
+
+    // Start the game
+    startGame();
+  </script>
+</body>
+</html>

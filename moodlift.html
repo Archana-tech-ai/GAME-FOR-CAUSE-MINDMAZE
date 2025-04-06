@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MoodLift: Journey to Joy</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to top, #d7eafd, #ffffff);
+      color: #333;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 50px auto;
+      padding: 30px;
+      background: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #0077cc;
+    }
+
+    .story {
+      font-size: 18px;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    .choices button {
+      padding: 12px 20px;
+      font-size: 16px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      background-color: #00bfa5;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .choices button:hover {
+      background-color: #00897b;
+    }
+
+    .emoji {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    .end-screen {
+      font-size: 20px;
+      color: #0077cc;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🌈 MoodLift: Journey to Joy</h1>
+    <div class="emoji" id="emoji">😊</div>
+    <div class="story" id="story">You wake up feeling a bit off. It’s time to take care of yourself. What will you do first?</div>
+    <div class="choices" id="choices"></div>
+    <div class="end-screen" id="end" style="display:none;"></div>
+  </div>
+
+  <script>
+    const storyData = [
+      {
+        emoji: "😊",
+        text: "You wake up feeling a bit off. It’s time to take care of yourself. What will you do first?",
+        choices: [
+          { text: "Take a walk outside", next: 1 },
+          { text: "Stay in bed and scroll your phone", next: 2 }
+        ]
+      },
+      {
+        emoji: "🌳",
+        text: "The fresh air and sunshine instantly uplift you. You feel more relaxed. What’s next?",
+        choices: [
+          { text: "Do a 5-minute breathing exercise", next: 3 },
+          { text: "Head back home and nap", next: 4 }
+        ]
+      },
+      {
+        emoji: "📱",
+        text: "You feel more drained and unmotivated. The constant scroll didn’t help.",
+        choices: [
+          { text: "Try journaling", next: 5 },
+          { text: "Play relaxing music", next: 6 }
+        ]
+      },
+      {
+        emoji: "🧘‍♀️",
+        text: "You close your eyes and breathe deeply. Your mind calms and body feels light.",
+        choices: [
+          { text: "Drink water and write affirmations", next: 7 }
+        ]
+      },
+      {
+        emoji: "😴",
+        text: "You nap and wake up groggy. Your mood is still low.",
+        choices: [
+          { text: "Go for a gentle walk now", next: 1 }
+        ]
+      },
+      {
+        emoji: "📓",
+        text: "You pour your thoughts into paper. It feels like a weight is lifted.",
+        choices: [
+          { text: "Talk to a friend", next: 8 }
+        ]
+      },
+      {
+        emoji: "🎵",
+        text: "The soft tunes soothe your thoughts. Your heart feels lighter.",
+        choices: [
+          { text: "Make a gratitude list", next: 9 }
+        ]
+      },
+      {
+        emoji: "💬",
+        text: "You reflect on your worth and repeat positive words. You feel strong.",
+        choices: []
+      },
+      {
+        emoji: "🤝",
+        text: "A chat with a close friend fills you with comfort. You're reminded you're not alone.",
+        choices: []
+      },
+      {
+        emoji: "💖",
+        text: "You list small joys in life. You start smiling. Hope blooms.",
+        choices: []
+      }
+    ];
+
+    let currentScene = 0;
+
+    function renderScene() {
+      const scene = storyData[currentScene];
+      document.getElementById("story").textContent = scene.text;
+      document.getElementById("emoji").textContent = scene.emoji;
+      const choicesDiv = document.getElementById("choices");
+      choicesDiv.innerHTML = "";
+
+      if (scene.choices.length === 0) {
+        document.getElementById("end").style.display = "block";
+        document.getElementById("end").innerHTML = "✨ You've completed this journey! Remember, your mental health matters every day. 🌟";
+      } else {
+        scene.choices.forEach(choice => {
+          const btn = document.createElement("button");
+          btn.textContent = choice.text;
+          btn.onclick = () => {
+            currentScene = choice.next;
+            renderScene();
+          };
+          choicesDiv.appendChild(btn);
+        });
+      }
+    }
+
+    renderScene();
+  </script>
+
+</body>
+</html>
