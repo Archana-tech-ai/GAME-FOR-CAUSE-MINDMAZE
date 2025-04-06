@@ -15,7 +15,7 @@ We created this game to promote health awareness using different types of games.
  2. Doctor Dash
 - A simple runner-style game where the player collects healthy food and avoids junk food.
 - Helps teach the importance of a healthy diet.
-- 
+  
  3. Stress Buster
 - A calming activity with breathing animation and motivational quotes.
 - Aimed to help users reduce stress and relax for a few minutes.
